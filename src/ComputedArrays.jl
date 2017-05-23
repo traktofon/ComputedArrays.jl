@@ -1,0 +1,5 @@
+module ComputedArrays
+
+# package code goes here
+
+end # module
