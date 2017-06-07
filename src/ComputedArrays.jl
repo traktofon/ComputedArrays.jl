@@ -7,7 +7,7 @@ module ComputedArrays
 # => A[j,k,i] = fn(xs[i], ys[j], zs[k])
 # => A[i,j,k] = fn(xs[k], ys[i], zs[j])
 
-import Base: ndims, size, getindex, show, display
+import Base: ndims, size, getindex, show
 export ComputedArray, ComputedVector, ComputedMatrix
 
 struct ComputedArray{F,C,T,N} <: DenseArray{T,N}
@@ -53,6 +53,7 @@ repr(A::ComputedArray{F,C,T,N}) where {F,C,T,N} =
    " ComputedArray of $(A.fn)(" * join(map(xs->"::$(eltype(xs))", A.coords), ", ") * ")::$T"
 
 show(io::IO, A::ComputedArray) = begin; write(io, repr(A)); nothing; end
-display(A::ComputedArray) = println(repr(A))
+# prevent REPL from doing fancy behavior inherited from AbstractArray
+show(io::IO, ::MIME"text/plain", A::ComputedArray) = show(io, A)
 
 end # module
