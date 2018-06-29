@@ -49,7 +49,7 @@ getindex(A::ComputedVector, i::Int) = A.fn(A.coords[1][i])
 end
 
 repr(A::ComputedArray{F,C,T,N}) where {F,C,T,N} =
-   (N==1? "$(length(A))-element" : join(size(A), "x")) *
+   (N==1 ? "$(length(A))-element" : join(size(A), "x")) *
    " ComputedArray of $(A.fn)(" * join(map(xs->"::$(eltype(xs))", A.coords), ", ") * ")::$T"
 
 show(io::IO, A::ComputedArray) = begin; write(io, repr(A)); nothing; end
