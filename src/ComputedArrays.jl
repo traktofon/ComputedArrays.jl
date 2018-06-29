@@ -23,7 +23,13 @@ const ComputedMatrix{F,C,T} = ComputedArray{F,C,T,2}
 function ComputedArray(fn, coords...; order=1:length(coords))
    N = length(coords)
    argtypes = map(eltype, coords)
-   T = Core.Inference.return_type(fn, argtypes)
+   local T
+   try
+      T = Base.return_types(fn, argtypes)[1]
+   catch
+      warn("Cannot infer return type, defaulting to Any.")
+      T = Any
+   end
    @assert length(order)==N "order must have $N elements"
    @assert isperm(order) "order=$order is not a permutation"
    shape = ntuple(d->length(coords[order[d]]), N)
