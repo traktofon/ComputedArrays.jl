@@ -12,11 +12,11 @@ A = ComputedArray(fn, xs, ys, zs)
 ```
 results in an object where `A[i,j,k] = fn(xs[i], ys[j], zs[k])`.
 
-Example:
+Example (on Julia 0.7.0-beta.0):
 ```julia
 using ComputedArrays
 
-xs = linrange(0,1,11)
+xs = range(0, stop=1, length=11)
 ys = range(0, stop=10, length=11)
 zs = ComputedArray(x->x*x, xs)
 collect(zs)'
@@ -31,6 +31,9 @@ A[3,4,5]    # --> 3.151318206614246
 
 # testing the overhead
 using BenchmarkTools
-@btime $A[1,2,3]     # -->  23.666 ns (0 allocations: 0 bytes)
-@btime collect($A);  # -->  35.925 μs (1 allocation: 10.56 KiB)
+@btime $A[1,2,3]                   # -->  19.327 ns (0 allocations: 0 bytes)
+@btime fn($xs[1], $ys[2], $zs[3])  # -->  18.787 ns (0 allocations: 0 bytes)
+@btime collect($A);                                   # -->  25.843 μs (2 allocations: 10.78 KiB)
+@btime [fn(x,y,z) for x in $xs, y in $ys, z in $zs];  # -->  10.585 μs (5 allocations: 11.05 KiB)
+
 ```
