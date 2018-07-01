@@ -16,7 +16,7 @@ Example:
 ```julia
 using ComputedArrays
 
-xs = linrange(0,1,11)
+xs = linspace(0,1,11)
 ys = linspace(0,10,11)
 zs = ComputedArray(x->x*x, xs)
 collect(zs)'
@@ -31,6 +31,9 @@ A[3,4,5]    # --> 3.151318206614246
 
 # testing the overhead
 using BenchmarkTools
-@btime $A[1,2,3]     # -->  23.666 ns (0 allocations: 0 bytes)
-@btime collect($A);  # -->  35.925 μs (1 allocation: 10.56 KiB)
+@btime $A[1,2,3]                   # -->  23.666 ns (0 allocations: 0 bytes)
+@btime fn($xs[1], $ys[2], $zs[3])  # -->  22.059 ns (0 allocations: 0 bytes)
+@btime collect($A);                                   # -->  35.925 μs (1 allocation: 10.56 KiB)
+@btime [fn(x,y,z) for x in $xs, y in $ys, z in $zs];  # -->  23.178 μs (1 allocation: 10.56 KiB)
+
 ```
