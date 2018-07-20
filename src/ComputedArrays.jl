@@ -25,9 +25,9 @@ function ComputedArray(fn, coords...; order=1:length(coords))
    argtypes = map(eltype, coords)
    local T
    try
-      T = Base.return_types(fn, argtypes)[1]
+      T = Union{Base.return_types(fn, argtypes)...}
    catch
-      warn("Cannot infer return type, defaulting to Any.")
+      @warn "Cannot infer return type, defaulting to Any."
       T = Any
    end
    @assert length(order)==N "order must have $N elements"
